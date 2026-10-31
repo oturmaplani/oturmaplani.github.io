@@ -1,0 +1,141 @@
+/* Print styles for A4 Classroom Seating Plan */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #print-container, #print-container * {
+    visibility: visible;
+  }
+
+  #print-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 15mm;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Print Container layout */
+.print-sheet {
+  width: 100%;
+  max-width: 270mm;
+  margin: 0 auto;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #1e293b;
+}
+
+.print-header {
+  text-align: center;
+  border-bottom: 2px solid #0f172a;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.print-header h1 {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.print-header p {
+  font-size: 13px;
+  color: #475569;
+  margin: 0;
+}
+
+.print-board {
+  text-align: center;
+  background: #f1f5f9;
+  border: 1.5px dashed #64748b;
+  border-radius: 6px;
+  padding: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+
+.print-grid {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.print-desk {
+  border: 1.5px solid #0f172a;
+  border-radius: 6px;
+  padding: 6px;
+  min-height: 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #ffffff;
+}
+
+.print-desk-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 2px;
+}
+
+.print-desk-students {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.print-student {
+  flex: 1;
+  text-align: center;
+  padding: 2px 4px;
+}
+
+.print-desk-divider {
+  width: 1px;
+  height: 24px;
+  background: #cbd5e1;
+}
+
+.print-empty-desk {
+  border: 1px dashed #cbd5e1;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.print-footer {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.print-signature-box {
+  min-width: 280px;
+  line-height: 2;
+}
