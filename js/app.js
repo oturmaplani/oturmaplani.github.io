@@ -64,23 +64,26 @@ class SiraApp {
 
   switchView(viewId) {
     this.activeView = viewId;
-    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-    const target = document.getElementById(viewId);
-    if (target) target.classList.add('active');
+    document.querySelectorAll('.view-section').forEach(el => {
+      el.style.display = (el.id === viewId) ? (viewId === 'teacher-dashboard-view' ? 'block' : 'flex') : 'none';
+      el.classList.toggle('active', el.id === viewId);
+    });
 
     if (viewId === 'kiosk-start-view') {
       this.renderKioskStart();
     } else if (viewId === 'teacher-dashboard-view') {
       this.renderTeacherDashboard();
+      this.switchTeacherTab(this.activeTeacherTab || 'tab-plan');
     }
   }
 
   switchTeacherTab(tabId) {
     this.activeTeacherTab = tabId;
-    document.querySelectorAll('.tab-btn').forEach(btn => {
+    document.querySelectorAll('.nav-item').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.tab === tabId);
     });
     document.querySelectorAll('.tab-pane').forEach(pane => {
+      pane.style.display = (pane.id === tabId) ? 'block' : 'none';
       pane.classList.toggle('active', pane.id === tabId);
     });
 
@@ -208,8 +211,16 @@ class SiraApp {
 
   /* ---------------- TEACHER DASHBOARD ---------------- */
   renderTeacherDashboard() {
-    const classNameEl = document.getElementById('dashboard-class-name');
-    if (classNameEl) classNameEl.textContent = this.classroom.name || '7-C Sınıfı';
+    const classNameEl = document.getElementById('teacher-top-class-name');
+    if (classNameEl) classNameEl.textContent = `🏫 ${this.classroom.name || '7-C Sınıfı'}`;
+    const classSubEl = document.getElementById('teacher-top-class-sub');
+    if (classSubEl) {
+      const activeDesks = (this.classroom.config.rows * this.classroom.config.cols) - (this.classroom.config.inactiveDesks || []).length;
+      classSubEl.textContent = `${this.classroom.students.length} Öğrenci | ${activeDesks} Aktif Masa`;
+    }
+
+    const badgeEl = document.getElementById('kiosk-classroom-badge');
+    if (badgeEl) badgeEl.textContent = `🏫 ${this.classroom.name || '7-C Sınıfı'}`;
 
     this.renderSeatingPlanTab();
     this.renderStudentListTab();
@@ -238,8 +249,8 @@ class SiraApp {
 
       if (isInactive) {
         card.innerHTML = `
-          <div class="desk-header"><span>Sıra ${id}</span><span>Kapalı</span></div>
-          <div style="font-size:11px;color:#64748b;text-align:center;padding:12px 0;">Boş Alan</div>
+          <div class="desk-card-header"><span>Sıra ${id}</span><span>Kapalı</span></div>
+          <div style="font-size:11px;color:#94a3b8;text-align:center;padding:12px 0;">Boş Alan</div>
         `;
       } else {
         const assign = assignmentMap.get(id);
@@ -249,19 +260,19 @@ class SiraApp {
         const s2Name = s2 ? (this.displayNames[s2.id] || s2.name) : 'Boş';
 
         card.innerHTML = `
-          <div class="desk-header">
+          <div class="desk-card-header">
             <span>Sıra ${id}</span>
-            <div class="desk-actions">
-              <button class="btn-card-discipline btn-card-yellow" title="Sarı Kart (Uyarı)" onclick="window.siraApp.onDisciplineCard(${id}, 'YELLOW')">S</button>
-              <button class="btn-card-discipline btn-card-red" title="Kırmızı Kart (Deprem Başlat)" onclick="window.siraApp.onDisciplineCard(${id}, 'RED')">K</button>
+            <div class="discipline-buttons">
+              <button class="btn-card-sari" title="Sarı Kart (Uyarı)" onclick="window.siraApp.onDisciplineCard(${id}, 'YELLOW')">S</button>
+              <button class="btn-card-kirmizi" title="Kırmızı Kart (Deprem Başlat)" onclick="window.siraApp.onDisciplineCard(${id}, 'RED')">K</button>
             </div>
           </div>
-          <div class="desk-students">
-            <div class="desk-seat ${this.isSelectedSeat(id, 1) ? 'selected-for-swap' : ''}" onclick="window.siraApp.onSeatClick(${id}, 1)">
+          <div class="desk-seats-row">
+            <div class="seat-box ${this.isSelectedSeat(id, 1) ? 'selected-for-swap' : ''}" onclick="window.siraApp.onSeatClick(${id}, 1)">
               ${s1Name}
             </div>
-            <div class="desk-divider"></div>
-            <div class="desk-seat ${this.isSelectedSeat(id, 2) ? 'selected-for-swap' : ''}" onclick="window.siraApp.onSeatClick(${id}, 2)">
+            <div class="seat-divider"></div>
+            <div class="seat-box ${this.isSelectedSeat(id, 2) ? 'selected-for-swap' : ''}" onclick="window.siraApp.onSeatClick(${id}, 2)">
               ${s2Name}
             </div>
           </div>

@@ -7,10 +7,10 @@
   
   <!-- PWA Meta Tags -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#4f46e5">
+  <meta name="theme-color" content="#00506E">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="SIRA">
   
   <!-- Icons -->
@@ -23,276 +23,304 @@
 </head>
 <body>
 
-  <!-- App Header -->
-  <header class="app-header">
-    <div class="brand" onclick="window.siraApp.switchView('kiosk-start-view')">
-      <img src="icons/app-logo.png" alt="SIRA Logo" class="brand-logo">
-      <div class="brand-text">
-        <h1>SIRA</h1>
-        <p>Akıllı Oturma Planı & Moreno Sosyometri</p>
+  <!-- ======================================================== -->
+  <!-- 1. KIOSK START SCREEN (Exact replica of KioskStartScreen) -->
+  <!-- ======================================================== -->
+  <section id="kiosk-start-view" class="view-section active">
+    <div class="kiosk-screen">
+      <div class="kiosk-center-column">
+        <img src="icons/app-logo.png" alt="SIRA Logo" class="kiosk-app-logo">
+        <h1 class="kiosk-title">SIRA</h1>
+        <p class="kiosk-subtitle">Sosyal İlişki ve Refah Algoritması</p>
+        
+        <div class="kiosk-class-badge" id="kiosk-classroom-badge">
+          🏫 7-C Sınıfı
+        </div>
+
+        <!-- Voting Status Card (Sade, orantı dairesiz modern görünüm) -->
+        <div class="kiosk-status-card">
+          <div class="kiosk-status-label">Oylama Durumu</div>
+          <div class="kiosk-status-count" id="kiosk-voted-count">34 / 34 Öğrenci Oy Kullandı</div>
+        </div>
+
+        <!-- Big Start Voting Button -->
+        <button class="kiosk-start-btn" onclick="window.siraApp.startVotingWizard()">
+          <span>Oylamaya Başla 🚀</span>
+        </button>
       </div>
-    </div>
-    <div class="header-actions">
-      <button class="btn btn-outline" style="font-size:12px;padding:6px 12px;" onclick="window.siraApp.switchView('teacher-dashboard-view')">
-        👨‍🏫 Öğretmen Girişi
+
+      <!-- Discreet Teacher Entry button in bottom-right corner -->
+      <button class="discreet-teacher-btn" onclick="window.siraApp.switchView('teacher-dashboard-view')">
+        <span>🛡️</span>
+        <span>Öğretmen Girişi</span>
       </button>
     </div>
-  </header>
+  </section>
 
-  <!-- Main Content Area -->
-  <main class="main-content">
 
-    <!-- 1. KIOSK START VIEW -->
-    <section id="kiosk-start-view" class="view-section active">
-      <div class="kiosk-start-container">
-        <div class="kiosk-card">
-          <img src="icons/app-logo.png" alt="SIRA App Logo" class="kiosk-logo-img">
-          <h2 class="kiosk-title">SIRA</h2>
-          <p class="kiosk-subtitle">Sınıf Oturma Tercihi ve Sosyometri Anketi</p>
-
-          <!-- Voting Status Card (Sade, halkasız) -->
-          <div class="voting-status-card">
-            <div class="status-label">Oylama Durumu</div>
-            <div class="status-count" id="kiosk-voted-count">0 / 0 Öğrenci Oy Kullandı</div>
-            <div class="status-desc">Her öğrenci sırayla kendi tercihini yapabilir.</div>
-          </div>
-
-          <button class="btn btn-primary btn-start-vote" onclick="window.siraApp.startVotingWizard()">
-            Oy Kullanmaya Başla
-          </button>
-
-          <button class="teacher-login-link" onclick="window.siraApp.switchView('teacher-dashboard-view')">
-            Öğretmen Girişi
-          </button>
+  <!-- ======================================================== -->
+  <!-- 2. KIOSK VOTING WIZARD                                   -->
+  <!-- ======================================================== -->
+  <section id="kiosk-vote-view" class="view-section" style="display:none;padding:20px;background:#f8f9fc;min-height:100vh;">
+    <div style="max-width:680px;margin:20px auto;background:#ffffff;border-radius:16px;padding:24px;border:1px solid #e2e8f0;box-shadow:0 4px 12px rgba(0,0,0,0.06);">
+      
+      <!-- Step 1: Select Student -->
+      <div class="wizard-step" id="wizard-step-1">
+        <div style="margin-bottom:16px;">
+          <h2 style="font-size:20px;font-weight:800;color:#00506E;margin-bottom:4px;">1. Adım: Kimsin? Adını Seç</h2>
+          <p style="font-size:13px;color:#64748b;">Listeden kendi adını bulup üzerine dokun.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));gap:8px;max-height:420px;overflow-y:auto;padding:4px;margin-bottom:20px;" id="voter-selection-grid"></div>
+        <div style="text-align:right;">
+          <button class="btn-outlined-print" style="width:auto;padding:0 16px;" onclick="window.siraApp.switchView('kiosk-start-view')">İptal / Geri Dön</button>
         </div>
       </div>
-    </section>
 
-    <!-- 2. KIOSK VOTING WIZARD -->
-    <section id="kiosk-vote-view" class="view-section">
-      <div class="wizard-container">
-        <!-- Step 1: Select Student -->
-        <div class="wizard-step" id="wizard-step-1">
-          <div class="wizard-header">
-            <h3 class="wizard-title">1. Adım: Kimsin? Adını Seç</h3>
-            <p class="wizard-desc">Lütfen listeden kendi adını bulup üzerine dokun.</p>
-          </div>
-          <div class="student-grid" id="voter-selection-grid"></div>
-          <div style="text-align:right;">
-            <button class="btn btn-secondary" onclick="window.siraApp.switchView('kiosk-start-view')">İptal / Geri Dön</button>
-          </div>
+      <!-- Step 2: Select Friends -->
+      <div class="wizard-step" id="wizard-step-2" style="display:none;">
+        <div style="margin-bottom:16px;">
+          <h2 style="font-size:20px;font-weight:800;color:#00506E;margin-bottom:4px;" id="wizard-friend-title">Kiminle Oturmak İstersin?</h2>
+          <p style="font-size:13px;color:#64748b;">Birlikte oturmak istediğin en fazla 5 arkadaşını tercih sırasına göre seç.</p>
         </div>
-
-        <!-- Step 2: Select Friends -->
-        <div class="wizard-step" id="wizard-step-2" style="display:none;">
-          <div class="wizard-header">
-            <h3 class="wizard-title" id="wizard-friend-title">Kiminle Oturmak İstersin?</h3>
-            <p class="wizard-desc">Birlikte oturmak istediğin en fazla 5 arkadaşını tercih sırasına göre seç.</p>
-          </div>
-          <div class="student-grid" id="friend-selection-grid"></div>
-          <div style="display:flex;justify-content:space-between;">
-            <button class="btn btn-secondary" onclick="window.siraApp.showWizardStep(1)">Geri</button>
-            <button class="btn btn-primary" onclick="window.siraApp.completeVote()">Tercihlerimi Onayla ve Bitir</button>
-          </div>
-        </div>
-
-        <!-- Step 3: Success -->
-        <div class="wizard-step" id="wizard-step-3" style="display:none;text-align:center;padding:48px 24px;">
-          <div style="font-size:48px;margin-bottom:12px;">🎉</div>
-          <h3 class="wizard-title" style="font-size:24px;margin-bottom:8px;">Harika! Oyun Kaydedildi</h3>
-          <p class="wizard-desc" style="font-size:15px;margin-bottom:24px;">
-            Teşekkürler <span id="vote-success-name" style="color:#ffffff;font-weight:700;"></span>. Tercihlerin güvenle kaydedildi.
-          </p>
-          <p style="font-size:12px;color:#94a3b8;margin-bottom:24px;">3 saniye içinde ana ekrana dönülüyor...</p>
-          <button class="btn btn-primary" onclick="window.siraApp.switchView('kiosk-start-view')">Ana Ekrana Dön</button>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));gap:8px;max-height:420px;overflow-y:auto;padding:4px;margin-bottom:20px;" id="friend-selection-grid"></div>
+        <div style="display:flex;justify-content:space-between;">
+          <button class="btn-outlined-print" style="width:auto;padding:0 16px;" onclick="window.siraApp.showWizardStep(1)">Geri</button>
+          <button class="btn-calc-plan" style="height:42px;padding:0 20px;font-size:14px;" onclick="window.siraApp.completeVote()">Tercihlerimi Onayla ve Bitir</button>
         </div>
       </div>
-    </section>
 
-    <!-- 3. TEACHER DASHBOARD VIEW -->
-    <section id="teacher-dashboard-view" class="view-section">
-      <div class="teacher-container">
-        <!-- Tabs Nav -->
-        <nav class="tab-nav">
-          <button class="tab-btn active" data-tab="tab-plan" onclick="window.siraApp.switchTeacherTab('tab-plan')">
-            🪑 Oturma Planı
-          </button>
-          <button class="tab-btn" data-tab="tab-sociogram" onclick="window.siraApp.switchTeacherTab('tab-sociogram')">
-            🕸️ Moreno Sosyogramı
-          </button>
-          <button class="tab-btn" data-tab="tab-students" onclick="window.siraApp.switchTeacherTab('tab-students')">
-            👥 Öğrenci Listesi
-          </button>
-          <button class="tab-btn" data-tab="tab-config" onclick="window.siraApp.switchTeacherTab('tab-config')">
-            ⚙️ Sınıf Düzeni
-          </button>
-        </nav>
+      <!-- Step 3: Success -->
+      <div class="wizard-step" id="wizard-step-3" style="display:none;text-align:center;padding:48px 16px;">
+        <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+        <h2 style="font-size:22px;font-weight:800;color:#00506E;margin-bottom:6px;">Harika! Oyun Kaydedildi</h2>
+        <p style="font-size:14px;color:#475569;margin-bottom:20px;">
+          Teşekkürler <strong id="vote-success-name"></strong>. Tercihlerin başarıyla kaydedildi.
+        </p>
+        <p style="font-size:12px;color:#94a3b8;margin-bottom:24px;">3 saniye içinde ana ekrana dönülüyor...</p>
+        <button class="btn-calc-plan" style="height:44px;padding:0 24px;margin:0 auto;" onclick="window.siraApp.switchView('kiosk-start-view')">Oylama Ekranına Dön</button>
+      </div>
 
-        <!-- Tab 1: Oturma Planı -->
-        <div class="tab-pane active" id="tab-plan">
-          <div class="plan-toolbar">
-            <div class="toolbar-left">
-              <!-- Tek satıra düşürülen absent toggle -->
-              <label class="absent-toggle-label">
-                <input type="checkbox" id="toggle-place-absent" onchange="window.siraApp.recomputePlan()">
-                <span>Gelmeyenleri de yerleştir.</span>
-              </label>
-              <button class="btn btn-primary" style="font-size:13px;padding:7px 14px;" onclick="window.siraApp.recomputePlan()">
-                ⚡ Planı Yenile
-              </button>
-            </div>
-            <div class="toolbar-right">
-              <!-- Işıltılı Rapor Butonu -->
-              <button class="btn btn-sparkle" onclick="window.siraApp.openRaporModal()">
-                ✨ RAPOR
-              </button>
-              <!-- Çıktı Al Butonu -->
-              <button class="btn btn-secondary" onclick="window.siraApp.printClassPlan()">
-                🖨️ ÇIKTI AL
-              </button>
-              <!-- Oylamaya Dön Butonu -->
-              <button class="btn btn-outline" onclick="window.siraApp.switchView('kiosk-start-view')">
-                🔙 Oylamaya Dön
-              </button>
-            </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================== -->
+  <!-- 3. TEACHER DASHBOARD (Scaffold with TopBar & BottomNav)  -->
+  <!-- ======================================================== -->
+  <section id="teacher-dashboard-view" class="view-section" style="display:none;">
+    <div class="teacher-scaffold">
+      
+      <!-- Top App Bar -->
+      <header class="teacher-top-app-bar">
+        <div class="class-selector-pill">
+          <div class="class-title-row">
+            <span id="teacher-top-class-name">🏫 7-C Sınıfı</span>
+            <span style="font-size:12px;">▼</span>
           </div>
-
-          <!-- Classroom Floor -->
-          <div class="classroom-board">
-            ▲ TAHTA / ÖĞRETMEN KÜRSÜSÜ (ÖN) ▲
-          </div>
-          <div class="classroom-grid" id="seating-plan-grid"></div>
+          <div class="class-subtitle" id="teacher-top-class-sub">34 Öğrenci | 17 Aktif Masa</div>
         </div>
+        <button class="back-to-kiosk-btn" onclick="window.siraApp.switchView('kiosk-start-view')">
+          <span>🗳️</span>
+          <span>Oylamaya Dön</span>
+        </button>
+      </header>
 
-        <!-- Tab 2: Moreno Sosyogramı -->
-        <div class="tab-pane" id="tab-sociogram">
-          <div class="sociogram-wrapper">
-            <div class="sociogram-controls">
-              <button class="btn-icon" title="Yakınlaştır" onclick="window.siraApp.zoomSociogram(1.2)">＋</button>
-              <button class="btn-icon" title="Uzaklaştır" onclick="window.siraApp.zoomSociogram(0.8)">－</button>
-              <button class="btn-icon" title="Görünümü Sıfırla" onclick="window.siraApp.resetSociogram()">⊙</button>
-              <button class="btn-icon" title="Tam Ekran" onclick="window.siraApp.openFullscreenSociogram()">⛶</button>
+      <!-- Main Tab Content Area -->
+      <main class="teacher-main-container">
+        
+        <!-- Tab 0: Sınıf Listesi -->
+        <div class="tab-pane active" id="tab-roster">
+          <div class="roster-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+              <div>
+                <h2 style="font-size:16px;font-weight:700;color:#00506E;">Sınıf Mevcudu</h2>
+                <p style="font-size:12px;color:#64748b;">Öğrenci listesini yönetin veya devamsızlık durumunu işaretleyin:</p>
+              </div>
+              <button class="btn-outlined-print" style="height:32px;padding:0 12px;font-size:11px;" onclick="window.siraApp.resetToSample7C()">
+                🔄 7-C Sınıfını Sıfırla
+              </button>
             </div>
-            <canvas id="sociogram-canvas" style="width:100%;height:100%;min-height:500px;display:block;"></canvas>
-            <div class="sociogram-legend">
-              <div class="legend-item"><div class="legend-color" style="background:#10b981;"></div> Karşılıklı Eşleşme</div>
-              <div class="legend-item"><div class="legend-color" style="background:#f59e0b;"></div> Yıldız Öğrenci</div>
-              <div class="legend-item"><div class="legend-color" style="background:#f43f5e;"></div> İzole Öğrenci</div>
+
+            <!-- Add student form -->
+            <div style="display:flex;gap:8px;margin-bottom:16px;">
+              <input type="text" id="new-student-name" placeholder="Öğrenci Adı Soyadı..." style="flex:1;border:1px solid #cbd5e1;border-radius:8px;padding:8px 12px;font-size:13px;">
+              <select id="new-student-gender" style="border:1px solid #cbd5e1;border-radius:8px;padding:8px 12px;font-size:13px;">
+                <option value="Erkek">Erkek</option>
+                <option value="Kız">Kız</option>
+              </select>
+              <button class="btn-calc-plan" style="height:36px;" onclick="window.siraApp.addStudent()">Ekle</button>
             </div>
-          </div>
-        </div>
 
-        <!-- Tab 3: Öğrenci Listesi -->
-        <div class="tab-pane" id="tab-students">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-            <h3 style="font-size:16px;font-weight:700;">Sınıf Mevcudu</h3>
-            <button class="btn btn-outline" style="font-size:12px;padding:6px 12px;" onclick="window.siraApp.resetToSample7C()">
-              🔄 7-C Örnek Sınıfını Yükle
-            </button>
-          </div>
-
-          <!-- Add Student Form -->
-          <div style="display:flex;gap:10px;margin-bottom:16px;background:var(--bg-card);padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);">
-            <input type="text" id="new-student-name" placeholder="Öğrenci Adı Soyadı..." style="flex:1;background:#0f172a;border:1px solid var(--border-color);border-radius:6px;padding:8px 12px;color:#fff;font-size:13px;">
-            <select id="new-student-gender" style="background:#0f172a;border:1px solid var(--border-color);border-radius:6px;padding:8px 12px;color:#fff;font-size:13px;">
-              <option value="Erkek">Erkek</option>
-              <option value="Kız">Kız</option>
-            </select>
-            <button class="btn btn-primary" onclick="window.siraApp.addStudent()">Ekle</button>
-          </div>
-
-          <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;font-size:13px;text-align:left;">
-              <thead>
-                <tr style="border-bottom:1px solid var(--border-color);background:rgba(15,23,42,0.6);color:var(--text-muted);">
-                  <th style="padding:10px 14px;">No</th>
-                  <th style="padding:10px 14px;">Ad Soyad</th>
-                  <th style="padding:10px 14px;">Cinsiyet</th>
-                  <th style="padding:10px 14px;">Oylama</th>
-                  <th style="padding:10px 14px;text-align:center;">Gelmedi (Devamsız)</th>
-                  <th style="padding:10px 14px;text-align:right;">İşlem</th>
-                </tr>
-              </thead>
-              <tbody id="student-table-tbody"></tbody>
-            </table>
+            <div style="overflow-x:auto;">
+              <table class="roster-table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Ad Soyad</th>
+                    <th>Cinsiyet</th>
+                    <th>Oylama Durumu</th>
+                    <th style="text-align:center;">Gelmedi (Devamsız)</th>
+                    <th style="text-align:right;">İşlem</th>
+                  </tr>
+                </thead>
+                <tbody id="student-table-tbody"></tbody>
+              </table>
+            </div>
           </div>
         </div>
 
-        <!-- Tab 4: Sınıf Düzeni -->
-        <div class="tab-pane" id="tab-config">
-          <div style="max-width:480px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:24px;">
-            <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;">Sınıf Geometrisi ve Sıra Düzeni</h3>
+        <!-- Tab 1: Masa Düzeni -->
+        <div class="tab-pane" id="tab-desks" style="display:none;">
+          <div class="roster-card" style="max-width:540px;">
+            <h2 style="font-size:16px;font-weight:700;color:#00506E;margin-bottom:14px;">Masa ve Sınıf Geometrisi</h2>
             
-            <div style="margin-bottom:14px;">
-              <label style="display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-muted);">Satır Sayısı (Derinlik)</label>
-              <input type="number" id="cfg-rows" min="1" max="10" value="4" style="width:100%;background:#0f172a;border:1px solid var(--border-color);border-radius:6px;padding:8px 12px;color:#fff;">
+            <div style="margin-bottom:12px;">
+              <label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;color:#475569;">Satır Sayısı (Derinlik)</label>
+              <input type="number" id="cfg-rows" min="1" max="10" value="4" style="width:100%;border:1px solid #cbd5e1;border-radius:8px;padding:8px 12px;font-size:13px;">
             </div>
 
-            <div style="margin-bottom:14px;">
-              <label style="display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-muted);">Sütun Sayısı (Genişlik)</label>
-              <input type="number" id="cfg-cols" min="1" max="10" value="5" style="width:100%;background:#0f172a;border:1px solid var(--border-color);border-radius:6px;padding:8px 12px;color:#fff;">
+            <div style="margin-bottom:12px;">
+              <label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;color:#475569;">Sütun Sayısı (Genişlik)</label>
+              <input type="number" id="cfg-cols" min="1" max="10" value="5" style="width:100%;border:1px solid #cbd5e1;border-radius:8px;padding:8px 12px;font-size:13px;">
             </div>
 
-            <div style="margin-bottom:20px;">
-              <label style="display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-muted);">Pencere Cephesi</label>
-              <select id="cfg-window" style="width:100%;background:#0f172a;border:1px solid var(--border-color);border-radius:6px;padding:8px 12px;color:#fff;">
+            <div style="margin-bottom:18px;">
+              <label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;color:#475569;">Pencere Konumu</label>
+              <select id="cfg-window" style="width:100%;border:1px solid #cbd5e1;border-radius:8px;padding:8px 12px;font-size:13px;">
                 <option value="left">Sol Taraf</option>
                 <option value="right">Sağ Taraf</option>
               </select>
             </div>
 
-            <button class="btn btn-primary" style="width:100%;" onclick="window.siraApp.saveClassroomConfig()">
-              Ayarları Kaydet ve Planı Güncelle
+            <button class="btn-calc-plan" style="width:100%;height:42px;" onclick="window.siraApp.saveClassroomConfig()">
+              Kaydet ve Düzeni Güncelle
             </button>
           </div>
         </div>
 
-      </div>
-    </section>
+        <!-- Tab 2: Oturma Planı (Exact replica of TeacherSeatingPlanTab.kt) -->
+        <div class="tab-pane" id="tab-plan" style="display:none;">
+          
+          <!-- Compact Calculation & Absent Option Card (Sleek 1-row layout) -->
+          <div class="calc-card">
+            <div class="calc-card-left">
+              <div class="calc-card-title">Oturma Planı Çözücü</div>
+              <label class="calc-absent-row">
+                <input type="checkbox" id="toggle-place-absent" onchange="window.siraApp.recomputePlan()">
+                <span class="calc-absent-text">Gelmeyenleri de yerleştir</span>
+              </label>
+            </div>
+            <button class="btn-calc-plan" onclick="window.siraApp.recomputePlan()">
+              <span>▶</span>
+              <span>Planı Hesapla</span>
+            </button>
+          </div>
 
-  </main>
+          <!-- Action Row (Golden Sparkling RAPOR & Outlined ÇIKTI AL) -->
+          <div class="plan-actions-row">
+            <!-- Glowing Sparkling Golden RAPOR Button -->
+            <button class="btn-gold-rapor" onclick="window.siraApp.openRaporModal()">
+              <span>✨ RAPOR</span>
+            </button>
+            <!-- Outlined ÇIKTI AL Button -->
+            <button class="btn-outlined-print" onclick="window.siraApp.printClassPlan()">
+              <span>🖨️ ÇIKTI AL</span>
+            </button>
+          </div>
 
-  <!-- FULLSCREEN SOSYOGRAM DIALOG -->
-  <div class="fullscreen-dialog" id="sociogram-fullscreen-dialog">
-    <div class="fullscreen-header">
-      <div style="font-size:15px;font-weight:700;">Moreno Hedef Sosyogramı (Tam Ekran)</div>
+          <!-- Classroom Floor -->
+          <div class="floor-board">
+            ▲ TAHTA / ÖĞRETMEN KÜRSÜSÜ (ÖN) ▲
+          </div>
+          <div class="floor-grid" id="seating-plan-grid"></div>
+        </div>
+
+        <!-- Tab 3: Sosyogram (Moreno Target with Semantic Zoom) -->
+        <div class="tab-pane" id="tab-sociogram" style="display:none;">
+          <div class="sociogram-container">
+            <div class="sociogram-controls-bar">
+              <button class="btn-ctrl" title="Yakınlaştır" onclick="window.siraApp.zoomSociogram(1.2)">＋</button>
+              <button class="btn-ctrl" title="Uzaklaştır" onclick="window.siraApp.zoomSociogram(0.8)">－</button>
+              <button class="btn-ctrl" title="Sıfırla" onclick="window.siraApp.resetSociogram()">⊙</button>
+              <button class="btn-ctrl" title="Tam Ekran" onclick="window.siraApp.openFullscreenSociogram()">⛶</button>
+            </div>
+            <canvas id="sociogram-canvas" style="width:100%;height:100%;display:block;"></canvas>
+            <div class="sociogram-legend-bar">
+              <div class="legend-tag"><div class="legend-dot" style="background:#10b981;"></div> Karşılıklı Eşleşme</div>
+              <div class="legend-tag"><div class="legend-dot" style="background:#f59e0b;"></div> Yıldız Öğrenci</div>
+              <div class="legend-tag"><div class="legend-dot" style="background:#f43f5e;"></div> İzole Öğrenci</div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- Bottom Navigation Bar (Exact Compose NavigationBar) -->
+      <nav class="teacher-bottom-nav">
+        <button class="nav-item active" data-tab="tab-roster" onclick="window.siraApp.switchTeacherTab('tab-roster')">
+          <span class="nav-item-icon">👥</span>
+          <span>Sınıf Listesi</span>
+        </button>
+        <button class="nav-item" data-tab="tab-desks" onclick="window.siraApp.switchTeacherTab('tab-desks')">
+          <span class="nav-item-icon">🪑</span>
+          <span>Masa Düzeni</span>
+        </button>
+        <button class="nav-item" data-tab="tab-plan" onclick="window.siraApp.switchTeacherTab('tab-plan')">
+          <span class="nav-item-icon">📐</span>
+          <span>Oturma Planı</span>
+        </button>
+        <button class="nav-item" data-tab="tab-sociogram" onclick="window.siraApp.switchTeacherTab('tab-sociogram')">
+          <span class="nav-item-icon">🕸️</span>
+          <span>Sosyogram</span>
+        </button>
+      </nav>
+
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 4. MODALS & FULLSCREEN                                   -->
+  <!-- ======================================================== -->
+
+  <!-- Fullscreen Sociogram Dialog -->
+  <div class="fullscreen-dialog-box" id="sociogram-fullscreen-dialog">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:#f8f9fc;border-bottom:1px solid #e2e8f0;">
+      <div style="font-size:15px;font-weight:700;color:#00506E;">Moreno Hedef Sosyogramı (Tam Ekran)</div>
       <div style="display:flex;gap:8px;">
-        <button class="btn-icon" title="Sıfırla" onclick="window.siraApp.fullscreenSociogramInstance?.resetView()">⊙</button>
-        <button class="btn-icon" title="Kapat" onclick="window.siraApp.closeFullscreenSociogram()">✕</button>
+        <button class="btn-ctrl" title="Sıfırla" onclick="window.siraApp.fullscreenSociogramInstance?.resetView()">⊙</button>
+        <button class="btn-ctrl" title="Kapat" onclick="window.siraApp.closeFullscreenSociogram()">✕</button>
       </div>
     </div>
-    <div style="flex:1;position:relative;background:#0f172a;">
+    <div style="flex:1;position:relative;background:#ffffff;">
       <canvas id="sociogram-fullscreen-canvas" style="width:100%;height:100%;display:block;"></canvas>
     </div>
   </div>
 
-
-
-  <!-- RAPOR MODAL -->
-  <div class="modal-overlay" id="rapor-modal">
-    <div class="modal-content" style="max-width:600px;">
-      <div class="modal-header">
-        <h3 class="modal-title">✨ Sınıf Yerleşim Analiz Raporu</h3>
-        <button class="modal-close" onclick="window.siraApp.closeModal('rapor-modal')">✕</button>
+  <!-- RAPOR Modal -->
+  <div class="app-modal-overlay" id="rapor-modal">
+    <div class="app-modal-card">
+      <div class="modal-header-row">
+        <h3 class="modal-header-title">✨ Sınıf Yerleşim Analiz Raporu</h3>
+        <button class="modal-close-icon" onclick="window.siraApp.closeModal('rapor-modal')">✕</button>
       </div>
-      <div class="rapor-stat-grid">
-        <div class="stat-box">
-          <div class="stat-value" id="rapor-friend-rate">%0</div>
-          <div class="stat-title">Arkadaş Memnuniyeti (İlk 3 Tercih)</div>
+      <div class="rapor-metric-grid">
+        <div class="rapor-metric-box">
+          <div class="rapor-metric-val" id="rapor-friend-rate">%0</div>
+          <div class="rapor-metric-title">Arkadaş Memnuniyeti</div>
         </div>
-        <div class="stat-box">
-          <div class="stat-value" id="rapor-desk-rate">%0</div>
-          <div class="stat-title">Sıra Konum Memnuniyeti</div>
+        <div class="rapor-metric-box">
+          <div class="rapor-metric-val" id="rapor-desk-rate">%0</div>
+          <div class="rapor-metric-title">Sıra Konum Memnuniyeti</div>
         </div>
-        <div class="stat-box">
-          <div class="stat-value" id="rapor-double-rate">%0</div>
-          <div class="stat-title">Çifte Memnuniyet (Hem Arkadaş Hem Sıra)</div>
+        <div class="rapor-metric-box">
+          <div class="rapor-metric-val" id="rapor-double-rate">%0</div>
+          <div class="rapor-metric-title">Çifte Memnuniyet</div>
         </div>
       </div>
-      <div style="background:#0f172a;border:1px solid var(--border-color);border-radius:var(--radius-sm);max-height:300px;overflow-y:auto;">
+      <div style="border:1px solid #e2e8f0;border-radius:8px;max-height:280px;overflow-y:auto;">
         <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:left;">
           <thead>
-            <tr style="border-bottom:1px solid #334155;color:var(--text-muted);background:#1e293b;">
+            <tr style="border-bottom:1px solid #e2e8f0;background:#f1f5f9;color:#64748b;">
               <th style="padding:8px;">Sıra</th>
               <th style="padding:8px;">1. Öğrenci</th>
               <th style="padding:8px;">2. Öğrenci</th>
@@ -306,33 +334,33 @@
     </div>
   </div>
 
-  <!-- DISCIPLINE & EARTHQUAKE MODAL -->
-  <div class="modal-overlay" id="earthquake-modal">
-    <div class="modal-content" style="max-width:440px;">
-      <div class="modal-header">
-        <h3 class="modal-title" id="earthquake-modal-title">Disiplin Müdahalesi</h3>
-        <button class="modal-close" onclick="window.siraApp.closeModal('earthquake-modal')">✕</button>
+  <!-- Disiplin / Deprem Modalı -->
+  <div class="app-modal-overlay" id="earthquake-modal">
+    <div class="app-modal-card" style="max-width:440px;">
+      <div class="modal-header-row">
+        <h3 class="modal-header-title" id="earthquake-modal-title">Disiplin Müdahalesi</h3>
+        <button class="modal-close-icon" onclick="window.siraApp.closeModal('earthquake-modal')">✕</button>
       </div>
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
+      <p style="font-size:13px;color:#64748b;margin-bottom:14px;">
         Sıradaki konuşma ve uyumsuzluk durumuna göre uygulanacak deprem seviyesini seçiniz:
       </p>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <button class="btn btn-secondary" style="justify-content:flex-start;text-align:left;padding:12px;" onclick="window.siraApp.executeEarthquakeLevel('SMALL')">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn-outlined-print" style="justify-content:flex-start;text-align:left;height:auto;padding:10px 14px;border-color:#ffb300;" onclick="window.siraApp.executeEarthquakeLevel('SMALL')">
           <div>
-            <div style="font-weight:700;color:#f59e0b;">1. Seviye: Küçük Deprem (Klik Dağıtımı)</div>
-            <div style="font-size:11px;color:#94a3b8;">Sıradaki ikiliyi ayırır ve farklı sıralardaki öğrencilerle takas eder.</div>
+            <div style="font-weight:700;color:#e65100;">1. Seviye: Küçük Deprem (Klik Dağıtımı)</div>
+            <div style="font-size:11px;color:#64748b;">Sıradaki ikiliyi ayırır ve farklı sıralardaki öğrencilerle takas eder.</div>
           </div>
         </button>
-        <button class="btn btn-secondary" style="justify-content:flex-start;text-align:left;padding:12px;" onclick="window.siraApp.executeEarthquakeLevel('MEDIUM')">
+        <button class="btn-outlined-print" style="justify-content:flex-start;text-align:left;height:auto;padding:10px 14px;border-color:#ef4444;" onclick="window.siraApp.executeEarthquakeLevel('MEDIUM')">
           <div>
-            <div style="font-weight:700;color:#ef4444;">2. Seviye: Orta Deprem (Tsunami)</div>
-            <div style="font-size:11px;color:#94a3b8;">İkilinin birlikte oturması yasaklanır; plan yeniden optimize edilir.</div>
+            <div style="font-weight:700;color:#c62828;">2. Seviye: Orta Deprem (Tsunami)</div>
+            <div style="font-size:11px;color:#64748b;">İkilinin birlikte oturması yasaklanır; plan yeniden optimize edilir.</div>
           </div>
         </button>
-        <button class="btn btn-secondary" style="justify-content:flex-start;text-align:left;padding:12px;" onclick="window.siraApp.executeEarthquakeLevel('LARGE')">
+        <button class="btn-outlined-print" style="justify-content:flex-start;text-align:left;height:auto;padding:10px 14px;border-color:#b91c1c;" onclick="window.siraApp.executeEarthquakeLevel('LARGE')">
           <div>
-            <div style="font-weight:700;color:#dc2626;">3. Seviye: Büyük Deprem (Tam Dönüşüm)</div>
-            <div style="font-size:11px;color:#94a3b8;">Sınıf genelinde tüm tercihler yeniden karıştırılır.</div>
+            <div style="font-weight:700;color:#991b1b;">3. Seviye: Büyük Deprem (Tam Dönüşüm)</div>
+            <div style="font-size:11px;color:#64748b;">Sınıf genelinde tüm tercihler yeniden karıştırılır.</div>
           </div>
         </button>
       </div>
@@ -350,15 +378,13 @@
   <script type="module" src="js/print.js"></script>
   <script type="module" src="js/app.js"></script>
 
-  <!-- Global helpers -->
+  <!-- Helper Bridge -->
   <script>
-    // Wire print button helper
     window.siraAppPrintHelper = () => {
       import('./js/print.js').then(module => {
         module.printSeatingPlan(window.siraApp.classroom, window.siraApp.displayNames);
       });
     };
-    // Attach print to siraApp prototype or method
     document.addEventListener('DOMContentLoaded', () => {
       if (window.siraApp) {
         window.siraApp.printClassPlan = () => window.siraAppPrintHelper();
