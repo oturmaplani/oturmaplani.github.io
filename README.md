@@ -1,1 +1,0 @@
-# oturmaplani.github.io
